@@ -6,12 +6,19 @@ const createCard = (req, res) => {
 
   Card.create({ name, link, owner: _id })
     .then((card) => res.send(card))
-    .catch((err) => console.log(`Ошибка: ${err}`));
+    .catch((err) => {
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Для создания карточки были введены некорректные данные' });
+      } else {
+        res.status(500).send({ message: 'Ошибка на сервере' });
+      }
+    });
 };
 
 const getCard = (req, res) => {
   Card.find({})
-    .then((card) => res.send(card));
+    .then((card) => res.send(card))
+    .catch((err) => res.status(500).send({ message: `Ошибка на сервере: ${err}` }));
 };
 
 const deleteCard = (req, res) => {
@@ -22,7 +29,11 @@ const deleteCard = (req, res) => {
       console.log('card was deleted');
     })
     .catch((err) => {
-      console.log(`Произошла ошибка: ${err}`);
+      if (err.message === 'NotFound') {
+        res.status(404).send({ message: 'Карточка с данным id не найден.' });
+      } else {
+        res.status(500).send({ message: 'Ошибка на сервере' });
+      }
     });
 };
 
@@ -43,7 +54,11 @@ const putLike = (req, res) => {
       console.log('liked');
     })
     .catch((err) => {
-      console.log(`Произошла ошибка: ${err}`);
+      if (err.message === 'NotFound') {
+        res.status(404).send({ message: 'Карточка с данным id не найден.' });
+      } else {
+        res.status(500).send({ message: 'Ошибка на сервере' });
+      }
     });
 };
 
@@ -63,7 +78,11 @@ const deleteLike = (req, res) => {
       console.log('disliked');
     })
     .catch((err) => {
-      console.log(`Произошла ошибка: ${err}`);
+      if (err.message === 'NotFound') {
+        res.status(404).send({ message: 'Карточка с данным id не найден.' });
+      } else {
+        res.status(500).send({ message: 'Ошибка на сервере' });
+      }
     });
 };
 

@@ -6,9 +6,8 @@ const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 
 const { PORT = 3000 } = process.env;
-const server = '127.0.0.1:27017';
 
-mongoose.connect(`mongodb://${server}/mestodb`);
+mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 const app = express();
 
