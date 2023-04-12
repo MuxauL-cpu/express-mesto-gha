@@ -14,7 +14,7 @@ router.delete('/:cardId', deleteCard);
 router.delete('/:cardId/likes', deleteLike);
 
 router.use((req, res) => {
-  res.status(404).send('SERVER NOT FOUND');
+  res.status(404).send('Сервер не найден');
 });
 
 module.exports = router;

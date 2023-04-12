@@ -60,7 +60,6 @@ const deleteLike = (req, res) => {
   )
     .then((card) => {
       res.status(200).send(card);
-      res.send(req.params.likes.length);
       console.log('disliked');
     })
     .catch((err) => {
