@@ -30,7 +30,7 @@ const deleteCard = (req, res) => {
     })
     .catch((err) => {
       if (err.message === 'NotFound') {
-        res.status(404).send({ message: 'Карточка с данным id не найден.' });
+        res.status(404).send({ message: 'Карточка с данным id не найдена.' });
       } else {
         res.status(500).send({ message: 'Ошибка на сервере' });
       }
@@ -55,7 +55,9 @@ const putLike = (req, res) => {
     })
     .catch((err) => {
       if (err.message === 'NotFound') {
-        res.status(404).send({ message: 'Карточка с данным id не найден.' });
+        res.status(404).send({ message: 'Карточка с данным id не найдена.' });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Были введены некорректные данные' });
       } else {
         res.status(500).send({ message: 'Ошибка на сервере' });
       }
@@ -79,7 +81,9 @@ const deleteLike = (req, res) => {
     })
     .catch((err) => {
       if (err.message === 'NotFound') {
-        res.status(404).send({ message: 'Карточка с данным id не найден.' });
+        res.status(404).send({ message: 'Карточка с данным id не найдена.' });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Были введены некорректные данные' });
       } else {
         res.status(500).send({ message: 'Ошибка на сервере' });
       }

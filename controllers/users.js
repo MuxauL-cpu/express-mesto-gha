@@ -6,7 +6,7 @@ const createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
         res.status(400).send({ message: 'При регистрации были введены некорректные данные' });
       } else {
         res.status(500).send({ message: 'Ошибка на сервере' });
@@ -43,7 +43,7 @@ const updateUserInfo = (req, res) => {
     req.user._id,
     { name, about },
     {
-      new: true,
+      new: true, runValidators: true,
     },
   )
     .then((user) => {
@@ -66,7 +66,7 @@ const updateUserAvatar = (req, res) => {
     req.user._id,
     { avatar },
     {
-      new: true,
+      new: true, runValidators: true,
     },
   )
     .then((user) => {
