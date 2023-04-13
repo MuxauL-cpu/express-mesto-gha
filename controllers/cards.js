@@ -25,6 +25,7 @@ const getCards = (req, res) => {
 const deleteCard = (req, res) => {
   const { cardId } = req.params;
   return Card.findByIdAndRemove(cardId)
+    .orFail(() => new Error('NotFound'))
     .then((card) => {
       res.status(200).send(card);
       console.log('card was deleted');
@@ -52,7 +53,7 @@ const putLike = (req, res) => {
       new: true,
     },
   )
-    .orFail()
+    .orFail(() => new Error('NotFound'))
     .then((card) => {
       res.status(200).send(card);
       console.log('liked');
@@ -79,7 +80,7 @@ const deleteLike = (req, res) => {
       new: true,
     },
   )
-    .orFail()
+    .orFail(() => new Error('NotFound'))
     .then((card) => {
       res.status(200).send(card);
       console.log('disliked');
