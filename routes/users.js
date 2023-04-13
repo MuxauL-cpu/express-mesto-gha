@@ -13,8 +13,4 @@ router.post('/', createUser);
 router.patch('/me', updateUserInfo);
 router.patch('/me/avatar', updateUserAvatar);
 
-router.use((req, res) => {
-  res.status(404).send('Сервер не найден');
-});
-
 module.exports = router;

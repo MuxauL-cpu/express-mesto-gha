@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
+const { NotFound } = require('./utils/errors');
 
 const { PORT = 3000 } = process.env;
 
@@ -21,6 +22,10 @@ app.use((req, res, next) => {
 
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
+
+app.use((req, res) => {
+  res.status(NotFound).send({ message: 'Сервер не найден.' });
+});
 
 app.listen(PORT, () => {
   console.log('start server');
