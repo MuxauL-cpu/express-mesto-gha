@@ -6,7 +6,6 @@ const createCard = (req, res) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: _id })
-    .orFail()
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
@@ -19,7 +18,6 @@ const createCard = (req, res) => {
 
 const getCards = (req, res) => {
   Card.find({})
-    .orFail()
     .then((card) => res.send(card))
     .catch((err) => res.status(ServerError).send({ message: `Ошибка на сервере: ${err}` }));
 };
@@ -27,7 +25,6 @@ const getCards = (req, res) => {
 const deleteCard = (req, res) => {
   const { cardId } = req.params;
   return Card.findByIdAndRemove(cardId)
-    .orFail()
     .then((card) => {
       res.status(200).send(card);
       console.log('card was deleted');

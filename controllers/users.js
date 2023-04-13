@@ -17,7 +17,6 @@ const createUser = (req, res) => {
 
 const getUsers = (req, res) => {
   User.find({})
-    .orFail()
     .then((user) => res.send(user))
     .catch((err) => res.status(500).send({ message: `Ошибка на сервере: ${err}` }));
 };
@@ -49,7 +48,6 @@ const updateUserInfo = (req, res) => {
       new: true, runValidators: true,
     },
   )
-    .orFail()
     .then((user) => {
       res.status(200).send(user);
     })
@@ -73,7 +71,6 @@ const updateUserAvatar = (req, res) => {
       new: true, runValidators: true,
     },
   )
-    .orFail()
     .then((user) => {
       res.status(200).send(user);
     })
