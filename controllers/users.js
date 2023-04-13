@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const { NotFound, BadRequest, ServerError } = require('../utils/errors');
 
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
@@ -16,6 +17,7 @@ const createUser = (req, res) => {
 
 const getUsers = (req, res) => {
   User.find({})
+    .orFail()
     .then((user) => res.send(user))
     .catch((err) => res.status(500).send({ message: `Ошибка на сервере: ${err}` }));
 };
@@ -23,16 +25,17 @@ const getUsers = (req, res) => {
 const getUser = (req, res) => {
   const { userId } = req.params;
   return User.findById(userId)
+    .orFail()
     .then((user) => {
       res.status(200).send(user);
     })
     .catch((err) => {
       if (err.message === 'NotFound') {
-        res.status(404).send({ message: 'Пользователь с данным id не найден.' });
+        res.status(NotFound).send({ message: 'Пользователь с данным id не найден.' });
       } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Введены некорректные данные' });
+        res.status(BadRequest).send({ message: 'Введены некорректные данные' });
       } else {
-        res.status(500).send({ message: 'Ошибка на сервере' });
+        res.status(ServerError).send({ message: 'Ошибка на сервере' });
       }
     });
 };
@@ -46,16 +49,17 @@ const updateUserInfo = (req, res) => {
       new: true, runValidators: true,
     },
   )
+    .orFail()
     .then((user) => {
       res.status(200).send(user);
     })
     .catch((err) => {
       if (err.message === 'NotFound') {
-        res.status(404).send({ message: 'Пользователь с данным id не найден.' });
+        res.status(NotFound).send({ message: 'Пользователь с данным id не найден.' });
       } else if (err.name === 'CastError' || err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Для изменения были введены некорректные данные' });
+        res.status(BadRequest).send({ message: 'Для изменения были введены некорректные данные' });
       } else {
-        res.status(500).send({ message: 'Ошибка на сервере' });
+        res.status(ServerError).send({ message: 'Ошибка на сервере' });
       }
     });
 };
@@ -69,16 +73,17 @@ const updateUserAvatar = (req, res) => {
       new: true, runValidators: true,
     },
   )
+    .orFail()
     .then((user) => {
       res.status(200).send(user);
     })
     .catch((err) => {
       if (err.message === 'NotFound') {
-        res.status(404).send({ message: 'Пользователь с данным id не найден.' });
+        res.status(NotFound).send({ message: 'Пользователь с данным id не найден.' });
       } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Для изменения были введены некорректные данные' });
+        res.status(BadRequest).send({ message: 'Для изменения были введены некорректные данные' });
       } else {
-        res.status(500).send({ message: 'Ошибка на сервере' });
+        res.status(ServerError).send({ message: 'Ошибка на сервере' });
       }
     });
 };
