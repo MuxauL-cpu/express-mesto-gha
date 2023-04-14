@@ -8,7 +8,7 @@ const createCard = (req, res) => {
   Card.create({ name, link, owner: _id })
     .then((card) => res.send(card))
     .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
+      if (err.name === 'ValidationError') {
         res.status(BadRequest).send({ message: 'Для создания карточки были введены некорректные данные' });
       } else {
         res.status(ServerError).send({ message: 'Ошибка на сервере' });

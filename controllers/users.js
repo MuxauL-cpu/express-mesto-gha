@@ -7,10 +7,10 @@ const createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
-        res.status(400).send({ message: 'При регистрации были введены некорректные данные' });
+      if (err.name === 'ValidationError') {
+        res.status(BadRequest).send({ message: 'При регистрации были введены некорректные данные' });
       } else {
-        res.status(500).send({ message: 'Ошибка на сервере' });
+        res.status(ServerError).send({ message: 'Ошибка на сервере' });
       }
     });
 };
