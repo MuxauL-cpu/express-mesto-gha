@@ -4,11 +4,13 @@ const mongoose = require('mongoose');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 
+const { errors } = require('celebrate');
 const auth = require('./middlewares/auth');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
-const { NotFound } = require('./utils/errors');
 const { createUser, login } = require('./controllers/users');
+const { errorHandler } = require('./middlewares/errorHandler');
+const { createUserValidation } = require('./utils/validations');
 
 const { PORT = 3000 } = process.env;
 
@@ -32,14 +34,13 @@ app.use(limiter);
 app.use(helmet());
 
 app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signup', createUserValidation, createUser);
 
 app.use('/users', auth, usersRouter);
 app.use('/cards', auth, cardsRouter);
 
-app.use((req, res) => {
-  res.status(NotFound).send({ message: 'Сервер не найден.' });
-});
+app.use(errors());
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log('start server');
