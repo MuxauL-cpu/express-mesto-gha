@@ -27,8 +27,12 @@ const deleteCard = (req, res) => {
   return Card.findByIdAndRemove(cardId)
     .orFail(() => new Error('NotFound'))
     .then((card) => {
-      res.status(200).send(card);
-      console.log('card was deleted');
+      if (card.owner.toString() === req.user._id) {
+        res.status(200).send(card);
+        console.log('card was deleted');
+      } else {
+        console.log('НЕТ');
+      }
     })
     .catch((err) => {
       if (err.message === 'NotFound') {

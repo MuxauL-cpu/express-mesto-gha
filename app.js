@@ -4,11 +4,15 @@ const mongoose = require('mongoose');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 
+const auth = require('./middlewares/auth');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { NotFound } = require('./utils/errors');
+const { createUser, login } = require('./controllers/users');
 
 const { PORT = 3000 } = process.env;
+
+require('dotenv').config();
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
@@ -27,13 +31,11 @@ const limiter = rateLimit({
 app.use(limiter);
 app.use(helmet());
 
-app.use((req, res, next) => {
-  req.user = { _id: '643491e5ea4058b58ba49db3' };
-  next();
-});
+app.post('/signin', login);
+app.post('/signup', createUser);
 
-app.use('/users', usersRouter);
-app.use('/cards', cardsRouter);
+app.use('/users', auth, usersRouter);
+app.use('/cards', auth, cardsRouter);
 
 app.use((req, res) => {
   res.status(NotFound).send({ message: 'Сервер не найден.' });
