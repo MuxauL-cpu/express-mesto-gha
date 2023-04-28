@@ -6,7 +6,6 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
-const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const createUser = (req, res, next) => {
   const {
@@ -75,9 +74,8 @@ const getUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError('Введены некорректные данные'));
-      } else {
-        next(err);
       }
+      next(err);
     });
 };
 

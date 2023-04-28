@@ -1,4 +1,5 @@
 const NotFound = 404;
+const Forbidden = 403;
 const BadRequest = 400;
 const ServerError = 500;
 const AuthError = 401;
@@ -10,5 +11,6 @@ module.exports = {
   BadRequest,
   ServerError,
   AuthError,
+  Forbidden,
   regexUrl,
 };

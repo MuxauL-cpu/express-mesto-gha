@@ -1,7 +1,7 @@
 const Card = require('../models/card');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
-const UnauthorizedError = require('../errors/UnauthorizedError');
+const ForbiddenError = require('../errors/ForbiddenError');
 
 const createCard = (req, res, next) => {
   const { _id } = req.user;
@@ -34,7 +34,7 @@ const deleteCard = (req, res, next) => {
           .then(res.status(200).send(card))
           .catch(next);
       }
-      throw new UnauthorizedError('Ошибка доступа, нельзя удалять чужие карточки.');
+      throw new ForbiddenError('Ошибка доступа, нельзя удалять чужие карточки.');
     })
     .catch((err) => {
       if (err.message === 'NotFound') {
