@@ -25,12 +25,21 @@ const createUser = (req, res, next) => {
         email,
         password: hash,
       })
-        .then((user) => res.send(user))
+        .then((user) => {
+          res.send({
+            name: user.name,
+            about: user.about,
+            avatar: user.avatar,
+            email: user.email,
+          });
+        })
         .catch((err) => {
           if (err.name === 'ValidationError') {
             next(new BadRequestError('При регистрации были введены некорректные данные'));
           } else if (err.code === 11000) {
             next(new ConflictError('Пользователь уже существует'));
+          } else {
+            next(err);
           }
         });
     });
@@ -45,13 +54,7 @@ const login = (req, res, next) => {
 
       res.send({ token });
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new UnauthorizedError('Неправильные почта или пароль'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 const getUsers = (req, res, next) => {
