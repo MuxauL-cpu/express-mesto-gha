@@ -62,7 +62,6 @@ const putLike = (req, res, next) => {
     .orFail(() => new Error('NotFound'))
     .then((card) => {
       res.status(200).send(card);
-      console.log('liked');
     })
     .catch((err) => {
       if (err.message === 'NotFound') {
@@ -89,7 +88,6 @@ const deleteLike = (req, res, next) => {
     .orFail(() => new Error('NotFound'))
     .then((card) => {
       res.status(200).send(card);
-      console.log('disliked');
     })
     .catch((err) => {
       if (err.message === 'NotFound') {

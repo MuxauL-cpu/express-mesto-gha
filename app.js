@@ -10,7 +10,7 @@ const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { createUser, login } = require('./controllers/users');
 const { errorHandler } = require('./middlewares/errorHandler');
-const { createUserValidation } = require('./utils/validations');
+const { createUserValidation, loginValidation } = require('./utils/validations');
 
 const { PORT = 3000 } = process.env;
 
@@ -33,7 +33,7 @@ const limiter = rateLimit({
 app.use(limiter);
 app.use(helmet());
 
-app.post('/signin', login);
+app.post('/signin', loginValidation, login);
 app.post('/signup', createUserValidation, createUser);
 
 app.use('/users', auth, usersRouter);

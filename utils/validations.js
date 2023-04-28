@@ -3,14 +3,14 @@ const { regexUrl } = require('./errors');
 
 const createCardValidation = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30).required,
+    name: Joi.string().min(2).max(30).required(),
     link: Joi.string().uri().regex(regexUrl).required(),
   }),
 });
 
 const likeCardValidation = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().hex().length(24),
+    cardId: Joi.string().hex().length(24).required(),
   }),
 });
 
@@ -44,8 +44,15 @@ const updateAvatarValidation = celebrate({
 });
 
 const userIDValidation = celebrate({
-  body: Joi.object().keys({
+  params: Joi.object().keys({
     id: Joi.string().hex().length(24).required(),
+  }),
+});
+
+const loginValidation = celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
   }),
 });
 
@@ -58,4 +65,5 @@ module.exports = {
   updateUserValidation,
   updateAvatarValidation,
   userIDValidation,
+  loginValidation,
 };
