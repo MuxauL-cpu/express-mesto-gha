@@ -11,6 +11,7 @@ const cardsRouter = require('./routes/cards');
 const { createUser, login } = require('./controllers/users');
 const { errorHandler } = require('./middlewares/errorHandler');
 const { createUserValidation, loginValidation } = require('./utils/validations');
+const { NotFound } = require('./utils/errors');
 
 const { PORT = 3000 } = process.env;
 
@@ -41,6 +42,10 @@ app.use('/cards', auth, cardsRouter);
 
 app.use(errors());
 app.use(errorHandler);
+
+app.use((req, res) => {
+  res.status(NotFound).send({ message: 'Сервер не найден.' });
+});
 
 app.listen(PORT, () => {
   console.log('start server');

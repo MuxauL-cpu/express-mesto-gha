@@ -63,16 +63,14 @@ const getUsers = (req, res, next) => {
 };
 
 const getUser = (req, res, next) => {
-  User.findById(req.user._id)
-    .orFail(() => new Error('NotFound'))
+  User.findById(req.params.userId)
     .then((user) => {
-      if (!user) {
-        throw new NotFoundError('Пользователь не найден');
-      }
       res.status(200).send(user);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'NotFound') {
+        next(new NotFoundError('Пользователь не найден'));
+      } else if (err.name === 'CastError') {
         next(new BadRequestError('Введены некорректные данные'));
       }
       next(err);
