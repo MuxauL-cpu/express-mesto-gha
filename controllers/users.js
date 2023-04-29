@@ -64,13 +64,14 @@ const getUsers = (req, res, next) => {
 
 const getUser = (req, res, next) => {
   User.findById(req.params.userId)
+    .orFail(() => {
+      throw new NotFoundError('Пользователь не найден');
+    })
     .then((user) => {
       res.status(200).send(user);
     })
     .catch((err) => {
-      if (err.name === 'NotFound') {
-        next(new NotFoundError('Пользователь не найден'));
-      } else if (err.name === 'CastError') {
+      if (err.name === 'CastError') {
         next(new BadRequestError('Введены некорректные данные'));
       }
       next(err);
@@ -90,7 +91,8 @@ const getCurrentUser = (req, res, next) => {
       }
       next(err);
     });
-}
+};
+
 const updateUserInfo = (req, res, next) => {
   const { name, about } = req.body;
   return User.findByIdAndUpdate(
