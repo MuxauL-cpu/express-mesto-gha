@@ -77,6 +77,20 @@ const getUser = (req, res, next) => {
     });
 };
 
+const getCurrentUser = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      res.status(200).send(user);
+    })
+    .catch((err) => {
+      if (err.name === 'NotFound') {
+        next(new NotFoundError('Пользователь не найден'));
+      } else if (err.name === 'CastError') {
+        next(new BadRequestError('Введены некорректные данные'));
+      }
+      next(err);
+    });
+}
 const updateUserInfo = (req, res, next) => {
   const { name, about } = req.body;
   return User.findByIdAndUpdate(
@@ -129,6 +143,7 @@ module.exports = {
   createUser,
   getUsers,
   getUser,
+  getCurrentUser,
   updateUserInfo,
   updateUserAvatar,
   login,
