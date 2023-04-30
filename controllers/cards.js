@@ -10,7 +10,7 @@ const createCard = (req, res, next) => {
   Card.create({ name, link, owner: _id })
     .then((card) => res.status(201).send(card))
     .catch((err) => {
-      if (err instanceof 'ValidationError') {
+      if (err instanceof BadRequestError) {
         next(new BadRequestError('Для создания карточки были введены некорректные данные'));
       } else {
         next(err);
@@ -60,19 +60,13 @@ const putLike = (req, res, next) => {
       new: true,
     },
   )
-    .orFail(() => new Error('NotFound'))
+    .orFail(() => {
+      throw new NotFoundError('Карточка с данным id не найдена.');
+    })
     .then((card) => {
       res.status(200).send(card);
     })
-    .catch((err) => {
-      if (err instanceof 'NotFound') {
-        next(new NotFoundError('Карточка с данным id не найдена.'));
-      } else if (err instanceof 'CastError') {
-        next(new BadRequestError('Были введены некорректные данные'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 const deleteLike = (req, res, next) => {
@@ -86,19 +80,13 @@ const deleteLike = (req, res, next) => {
       new: true,
     },
   )
-    .orFail(() => new Error('NotFound'))
+    .orFail(() => {
+      throw new NotFoundError('Карточка с данным id не найдена.');
+    })
     .then((card) => {
       res.status(200).send(card);
     })
-    .catch((err) => {
-      if (err instanceof 'NotFound') {
-        next(new NotFoundError('Карточка с данным id не найдена.'));
-      } else if (err instanceof 'CastError') {
-        next(new BadRequestError('Были введены некорректные данные'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 module.exports = {
