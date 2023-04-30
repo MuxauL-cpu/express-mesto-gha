@@ -27,7 +27,7 @@ const createUser = (req, res, next) => {
         .then((user) => {
           const newUser = user.toObject();
           delete newUser.password;
-          res.send(newUser);
+          res.status(201).send(newUser);
         })
         .catch((err) => {
           if (err instanceof BadRequestError) {
