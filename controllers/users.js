@@ -35,7 +35,7 @@ const createUser = (req, res, next) => {
         .catch((err) => {
           if (err instanceof 'ValidationError') {
             next(new BadRequestError('При регистрации были введены некорректные данные'));
-          } else if (err instanceof 11000) {
+          } else if (err.code === 11000) {
             next(new ConflictError('Пользователь уже существует'));
           } else {
             next(err);
