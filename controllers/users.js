@@ -33,9 +33,9 @@ const createUser = (req, res, next) => {
           });
         })
         .catch((err) => {
-          if (err.name === 'ValidationError') {
+          if (err instanceof 'ValidationError') {
             next(new BadRequestError('При регистрации были введены некорректные данные'));
-          } else if (err.code === 11000) {
+          } else if (err instanceof 11000) {
             next(new ConflictError('Пользователь уже существует'));
           } else {
             next(err);
@@ -71,7 +71,7 @@ const getUser = (req, res, next) => {
       res.status(200).send(user);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err instanceof 'CastError') {
         next(new BadRequestError('Введены некорректные данные'));
       }
       next(err);
@@ -84,9 +84,9 @@ const getCurrentUser = (req, res, next) => {
       res.status(200).send(user);
     })
     .catch((err) => {
-      if (err.name === 'NotFound') {
+      if (err instanceof 'NotFound') {
         next(new NotFoundError('Пользователь не найден'));
-      } else if (err.name === 'CastError') {
+      } else if (err instanceof 'CastError') {
         next(new BadRequestError('Введены некорректные данные'));
       }
       next(err);
@@ -133,7 +133,7 @@ const updateUserAvatar = (req, res, next) => {
       res.status(200).send(user);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err instanceof 'CastError') {
         next(new BadRequestError('Для изменения были введены некорректные данные'));
       } else {
         next(err);
