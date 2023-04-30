@@ -8,7 +8,7 @@ const createCard = (req, res, next) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: _id })
-    .then((card) => res.send(card))
+    .then((card) => res.status(201).send(card))
     .catch((err) => {
       if (err instanceof 'ValidationError') {
         next(new BadRequestError('Для создания карточки были введены некорректные данные'));
@@ -28,19 +28,19 @@ const getCards = (req, res, next) => {
 const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   return Card.findById(cardId)
-    .orFail(() => new Error('NotFound'))
+    .orFail(() => {
+      throw new NotFoundError('Карточка с данным id не найдена.');
+    })
     .then((card) => {
       if (card.owner.toString() === req.user._id) {
-        return Card.findByIdAndRemove(cardId)
+        return Card.deleteOne(cardId)
           .then(res.status(200).send(card))
           .catch(next);
       }
       throw new ForbiddenError('Ошибка доступа, нельзя удалять чужие карточки.');
     })
     .catch((err) => {
-      if (err instanceof 'NotFound') {
-        next(new NotFoundError('Карточка с данным id не найдена.'));
-      } else if (err instanceof 'CastError') {
+      if (err instanceof BadRequestError) {
         next(new BadRequestError('Были введены некорректные данные'));
       } else {
         next(err);

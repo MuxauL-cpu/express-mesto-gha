@@ -1,5 +1,4 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
@@ -10,7 +9,6 @@ const routes = require('./routes');
 const { createUser, login } = require('./controllers/users');
 const { errorHandler } = require('./middlewares/errorHandler');
 const { createUserValidation, loginValidation } = require('./utils/validations');
-const { NotFound } = require('./utils/errors');
 
 const { PORT = 3000 } = process.env;
 
@@ -20,8 +18,8 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 const app = express();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -41,10 +39,6 @@ app.use(routes);
 
 app.use(errors());
 app.use(errorHandler);
-
-app.use((req, res) => {
-  res.status(NotFound).send({ message: 'Сервер не найден.' });
-});
 
 app.listen(PORT, () => {
   console.log('start server');

@@ -25,15 +25,12 @@ const createUser = (req, res, next) => {
         password: hash,
       })
         .then((user) => {
-          res.send({
-            name: user.name,
-            about: user.about,
-            avatar: user.avatar,
-            email: user.email,
-          });
+          const newUser = user.toObject();
+          delete newUser.password;
+          res.send(newUser);
         })
         .catch((err) => {
-          if (err instanceof 'ValidationError') {
+          if (err instanceof BadRequestError) {
             next(new BadRequestError('При регистрации были введены некорректные данные'));
           } else if (err.code === 11000) {
             next(new ConflictError('Пользователь уже существует'));
@@ -73,24 +70,21 @@ const getUser = (req, res, next) => {
     .catch((err) => {
       if (err instanceof 'CastError') {
         next(new BadRequestError('Введены некорректные данные'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
 const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
+    .orFail(() => {
+      throw new NotFoundError('Пользователь не найден');
+    })
     .then((user) => {
       res.status(200).send(user);
     })
-    .catch((err) => {
-      if (err instanceof 'NotFound') {
-        next(new NotFoundError('Пользователь не найден'));
-      } else if (err instanceof 'CastError') {
-        next(new BadRequestError('Введены некорректные данные'));
-      }
-      next(err);
-    });
+    .catch(next);
 };
 
 const updateUserInfo = (req, res, next) => {
@@ -108,13 +102,7 @@ const updateUserInfo = (req, res, next) => {
       }
       res.status(200).send(user);
     })
-    .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
-        next(new BadRequestError('Для изменения были введены некорректные данные'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 const updateUserAvatar = (req, res, next) => {
@@ -132,13 +120,7 @@ const updateUserAvatar = (req, res, next) => {
       }
       res.status(200).send(user);
     })
-    .catch((err) => {
-      if (err instanceof 'CastError') {
-        next(new BadRequestError('Для изменения были введены некорректные данные'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 module.exports = {

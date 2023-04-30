@@ -1,6 +1,6 @@
 {
     "env": {
-        "browser": true,
+        "browser": false,
         "es2021": true
     },
     "extends": "airbnb-base",
@@ -13,6 +13,5 @@
     "rules": {
       "no-underscore-dangle": ["error", { "allow": ["_id"] }],
       "import/no-extraneous-dependencies": "off",
-      "no-console": "off"
     }
 }
