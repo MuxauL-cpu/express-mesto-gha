@@ -33,11 +33,12 @@ const deleteCard = (req, res, next) => {
     })
     .then((card) => {
       if (card.owner.toString() === req.user._id) {
-        return Card.deleteOne(cardId)
+        Card.deleteOne({ _id: cardId })
           .then(res.status(200).send(card))
           .catch(next);
+      } else {
+        next(new ForbiddenError('Ошибка доступа, нельзя удалять чужие карточки.'));
       }
-      throw new ForbiddenError('Ошибка доступа, нельзя удалять чужие карточки.');
     })
     .catch((err) => {
       if (err instanceof BadRequestError) {
