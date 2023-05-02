@@ -103,7 +103,13 @@ const updateUserInfo = (req, res, next) => {
       }
       res.status(200).send(user);
     })
-    .catch(next);
+    .catch((err) => {
+      if (err instanceof Error.CastError) {
+        next(new BadRequestError('Введены некорректные данные'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 const updateUserAvatar = (req, res, next) => {
