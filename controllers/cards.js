@@ -1,3 +1,4 @@
+const { Error } = require('mongoose');
 const Card = require('../models/card');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
@@ -10,7 +11,7 @@ const createCard = (req, res, next) => {
   Card.create({ name, link, owner: _id })
     .then((card) => res.status(201).send(card))
     .catch((err) => {
-      if (err instanceof BadRequestError) {
+      if (err instanceof Error.CastError) {
         next(new BadRequestError('Для создания карточки были введены некорректные данные'));
       } else {
         next(err);
@@ -41,7 +42,7 @@ const deleteCard = (req, res, next) => {
       }
     })
     .catch((err) => {
-      if (err instanceof BadRequestError) {
+      if (err instanceof Error.CastError) {
         next(new BadRequestError('Были введены некорректные данные'));
       } else {
         next(err);

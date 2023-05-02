@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { Error } = require('mongoose');
 const User = require('../models/user');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
@@ -30,7 +31,7 @@ const createUser = (req, res, next) => {
           res.status(201).send(newUser);
         })
         .catch((err) => {
-          if (err instanceof BadRequestError) {
+          if (err instanceof Error.ValidationError) {
             next(new BadRequestError('При регистрации были введены некорректные данные'));
           } else if (err.code === 11000) {
             next(new ConflictError('Пользователь уже существует'));
@@ -68,7 +69,7 @@ const getUser = (req, res, next) => {
       res.status(200).send(user);
     })
     .catch((err) => {
-      if (err instanceof BadRequestError) {
+      if (err instanceof Error.CastError) {
         next(new BadRequestError('Введены некорректные данные'));
       } else {
         next(err);
